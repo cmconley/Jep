@@ -1,0 +1,105 @@
+﻿@page "/game"
+
+<h1>This is ... Jeopardy!</h1>
+
+
+
+<div>
+
+    <div>
+        <div class="divbuttons">
+            <button class="btn btn-cluevalue" @onclick=@(() => GetResponseInfo(200))>$ 200</button>
+        </div>
+
+        <div class="divbuttons">
+            <button class="btn btn-cluevalue" @onclick=@(() => GetResponseInfo(400))>$ 400</button>
+        </div>
+        <div class="divbuttons">
+            <button class="btn btn-cluevalue" @onclick=@(() => GetResponseInfo(600))>$ 600</button>
+        </div>
+        <div class="divbuttons">
+            <button class="btn btn-cluevalue" @onclick=@(() => GetResponseInfo(800))>$ 800</button>
+        </div>
+        <div class="divbuttons">
+            <button class="btn btn-cluevalue" @onclick=@(() => GetResponseInfo(1000))>$ 1000</button>
+        </div>
+    </div>
+    <div class="mainscore">
+        <b>Current Score:</b> $ @currentScore
+    </div>
+</div>
+
+@code {
+    private int currentScore = 0;
+    private int currentQuestionValue = 0;
+
+    private object AdjustScore(int x)
+    {
+        currentScore = currentScore + x;
+        ClosePopup();
+        return true;
+    }
+
+
+    bool ShowPopup = false;
+
+    private object GetResponseInfo(int value)
+    {
+        currentQuestionValue = value;
+        // Open the Popup
+        ShowPopup = true;
+        return true;
+
+    }
+
+    void ClosePopup()
+    {
+        ShowPopup = false;
+    }
+
+}
+
+@if (ShowPopup)
+{
+    <!-- This is the popup to create or edit a forecast -->
+    <div class="modal" tabindex="-1" style="display:block" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Question: $@currentQuestionValue</h3>
+
+                    <!-- Button to close the popup -->
+                    <button type="button" class="close"
+                            @onclick="ClosePopup">
+                        <span aria-hidden="true">X</span>
+                    </button>
+                </div>
+
+                <!-- Edit form for the current forecast -->
+                <div class="modal-body">
+
+                    <br />
+                    <button class="btn btn-primary" style="background-color:green"
+                             @onclick=@(() => AdjustScore(@currentQuestionValue))>
+                        
+                        Corrrect!
+                    </button>
+                    <button class="btn btn-primary" style="background-color:red"
+                            @onclick=@(() => AdjustScore(@currentQuestionValue*-1))>
+                   
+                        Incorrrect!
+                    </button>
+                    <button class="btn btn-primary"  @onclick="ClosePopup">
+                        No Answer
+                    </button>
+                    <button class="btn btn-primary" >
+                        Daily Double
+                    </button>
+                    
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
